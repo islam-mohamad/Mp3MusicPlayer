@@ -22,10 +22,11 @@
                 android:layout_height="match_parent"
                 android:text="song Title"
                 android:textColor="#fff"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:gravity="start|center"
-                android:id="@+id/title"/>
+                android:id="@+id/title"
+                android:lines="1"/>
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

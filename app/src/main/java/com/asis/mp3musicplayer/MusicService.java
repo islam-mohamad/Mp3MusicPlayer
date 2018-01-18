@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -18,12 +19,17 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private static final String TAG = "MusicService";
     IBinder mBinder = new MyMusicBinder();
     private MediaPlayer mMediaPlayer;
-    private  int position;
+    private int position;
+    private long songID;
+    private int totlaTime, currentTitme;
+    private SongClicked clickedSong;
+    private Handler mHandler;
     public MusicService() {}
 
     @Override
     public void onCreate() {
-       initializeMediaPlayer();
+        mHandler = new Handler();
+        initializeMediaPlayer();
     }
 
     void initializeMediaPlayer()
@@ -40,7 +46,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e(TAG, "in onBind");
+        final Uri songUri = Uri.parse(intent.getStringExtra("uri"));
+        songID =intent.getLongExtra("songID",0);
+        play(songUri);
+        Log.e(TAG, "in onBind, Inent : "+intent.toString());
+        Log.e(TAG, "in onBind,SongID: "+songID);
         return mBinder;
     }
 
@@ -53,6 +63,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public boolean onUnbind(Intent intent) {
         Log.e(TAG, "in onUnbind");
+        if(mMediaPlayer!=null) {
+            mMediaPlayer.pause();
+            clickedSong.setPlaying(false);
+            EventBus.getDefault().post(clickedSong); // song has been stoped or paused
+            Log.e(TAG, "in pausing ");
+            mHandler.removeCallbacks(updateSeekBar);
+        }
         return true;
     }
 
@@ -64,15 +81,30 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
 
+    int i = 1;
+
     @Override
     public void onPrepared(MediaPlayer mp) {
         Log.e(TAG, "in onPrepared");
         mMediaPlayer.start();
-//        EventBus.getDefault().post();
-        MainActivity.list.get(position).setPlaying(true);
+        clickedSong = new SongClicked(songID,true,currentTitme);
+        mHandler.postDelayed(updateSeekBar,1000);
+        totlaTime = mMediaPlayer.getDuration();
+//        EventBus.getDefault().post(new SongClicked(songID,true));
     }
 
-
+    private Runnable updateSeekBar = new Runnable()
+    {
+        public void run()
+        {
+//            if (mMediaPlayer.getCurrentPosition()<mMediaPlayer.getDuration()){
+                Log.e(TAG,"count:"+(i++));
+            clickedSong.setCurrentTime(mMediaPlayer.getCurrentPosition());
+                EventBus.getDefault().post(clickedSong);
+//            }
+            mHandler.postDelayed(this, 1000);
+        }
+    };
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.e(TAG, "in onCompletion");
@@ -85,25 +117,41 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return true;
     }
 
-    void play(int position){
-        this.position = position;
+    void play(Uri songUri){
         Log.e(TAG, "in play");
-        Log.e(TAG, "position is: "+position+" is Playing? "+MainActivity.list.get(position).isPlaying());
-        if(mMediaPlayer.isPlaying()&&MainActivity.list.get(position).isPlaying()){
-            mMediaPlayer.pause();
-            MainActivity.list.get(position).setPlaying(false);
-            Log.e(TAG, "in pausing ");
+        try {
+            Log.e(TAG, "in playing ");
+            mMediaPlayer.reset();
+            mMediaPlayer.setDataSource(getApplicationContext(),songUri);
+            mMediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        else {
-            try {
-                Log.e(TAG, "in playing ");
-                mMediaPlayer.reset();
-                mMediaPlayer.setDataSource(getApplicationContext(), MainActivity.list.get(position).getSongUri());
-                mMediaPlayer.prepareAsync();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    }
+    void pause(){
+        mMediaPlayer.pause();
+    }
+    void resume(){
+        mMediaPlayer.start();
+    }
+    void seekTo(int position){
+        mMediaPlayer.seekTo(position);
+    }
+    void forward(){
+        currentTitme = mMediaPlayer.getCurrentPosition();
+        if(currentTitme < totlaTime){
+            mMediaPlayer.seekTo(currentTitme+5000);
         }
+    }
+    void backward(){
+        currentTitme = mMediaPlayer.getCurrentPosition();
+        if(currentTitme > 5000){
+            mMediaPlayer.seekTo(currentTitme-5000);
+        }
+    }
+
+    boolean isPlaying(){
+        return mMediaPlayer.isPlaying();
     }
 
      class MyMusicBinder extends Binder{

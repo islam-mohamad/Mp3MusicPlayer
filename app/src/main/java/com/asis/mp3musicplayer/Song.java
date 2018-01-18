@@ -1,5 +1,6 @@
 package com.asis.mp3musicplayer;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 /**
@@ -12,17 +13,28 @@ public class Song {
     private String artist;
     private Uri songUri;
 //    private String info;
-    private String totalTime;
-    private String currentTime;
+    private long totalTime;
+    private long currentTime;
     private boolean isPlaying ;
     private boolean isLooping;
+    private Bitmap albumImage;
 
-    public Song(long id, String title, String artist/*, String path, String info*/) {
+    public Song(long id, String title, String artist, long totalTime, Bitmap albumImage/*, String path, String info*/) {
         this.id = id;
         this.title = title;
         this.artist = artist;
+        this.totalTime = totalTime;
+        this.albumImage = albumImage;
 //        this.path = path;
 //        this.info = info;
+    }
+
+    public Bitmap getAlbumImage() {
+        return albumImage;
+    }
+
+    public void setAlbumImage(Bitmap albumImage) {
+        this.albumImage = albumImage;
     }
 
     public long getId() {
@@ -73,19 +85,19 @@ public class Song {
 //        this.info = info;
 //    }
 
-    public String getTotalTime() {
+    public long getTotalTime() {
         return totalTime;
     }
 
-    public void setTotalTime(String totalTime) {
+    public void setTotalTime(long totalTime) {
         this.totalTime = totalTime;
     }
 
-    public String getCurrentTime() {
+    public long getCurrentTime() {
         return currentTime;
     }
 
-    public void setCurrentTime(String currentTime) {
+    public void setCurrentTime(long currentTime) {
         this.currentTime = currentTime;
     }
 

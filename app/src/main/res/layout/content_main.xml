@@ -8,10 +8,24 @@
     tools:context="com.asis.mp3musicplayer.MainActivity"
     tools:showIn="@layout/app_bar_main"
     android:orientation="vertical">
-    <ImageView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/gif"
+            android:background="@drawable/bg_anim"
+            android:visibility="visible"
+            android:id="@+id/gif"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageViewAlbum"
+            android:visibility="gone"
+            android:scaleType="fitXY"/>
+    </RelativeLayout>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -25,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="00:00:"
+            android:text="00:00"
             android:id="@+id/txt_currentTime"
             android:textColor="#FFF"
             android:paddingLeft="20dp"
@@ -67,7 +81,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_lock"
+            android:id="@+id/btn_repeate"
             android:layout_gravity="right"
             android:background="@null"
             android:layout_weight="0"
