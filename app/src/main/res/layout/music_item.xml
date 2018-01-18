@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="#3f3f3f"
+    android:clickable="true"
+    android:id="@+id/songLayout">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:layout_weight="0.9"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Song Title"
+            android:id="@+id/textViewSongTitle"
+            android:textSize="16sp"
+            android:textColor="#fff"
+            android:lines="1"
+            android:gravity="start"/>
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/gif"
+            android:background="@drawable/bg_anim"
+            android:visibility="invisible"
+            android:id="@+id/gif"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Artist Name "
+        android:id="@+id/textViewArtistName"
+        android:textSize="14sp"
+        android:layout_marginTop="5dp"
+        android:textColor="#fff"
+        android:lines="1"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000"
+        android:layout_marginTop="10dp"/>
+
+</LinearLayout>
