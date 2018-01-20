@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="#3f3f3f"
+    android:background="#fa9723"
     android:clickable="true"
     android:id="@+id/songLayout">
 
@@ -22,7 +22,8 @@
             android:textSize="16sp"
             android:textColor="#fff"
             android:lines="1"
-            android:gravity="start"/>
+            android:gravity="start"
+            android:layout_marginStart="10dp"/>
 
         <pl.droidsonroids.gif.GifImageView
             android:layout_weight="0.1"
@@ -31,7 +32,8 @@
             android:src="@drawable/gif"
             android:background="@drawable/bg_anim"
             android:visibility="invisible"
-            android:id="@+id/gif"/>
+            android:id="@+id/gif"
+            android:layout_marginEnd="10dp"/>
     </LinearLayout>
 
     <TextView
@@ -42,12 +44,13 @@
         android:textSize="14sp"
         android:layout_marginTop="5dp"
         android:textColor="#fff"
-        android:lines="1"/>
+        android:lines="1"
+        android:layout_marginStart="10dp"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#000"
+        android:background="#fff"
         android:layout_marginTop="10dp"/>
 
 </LinearLayout>

@@ -19,9 +19,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:background="#3f3f3f">
+        android:background="#fa9723">
         <android.support.v7.widget.RecyclerView
-            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/song_list_recycler_view"

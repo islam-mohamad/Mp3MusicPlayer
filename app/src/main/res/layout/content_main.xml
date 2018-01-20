@@ -12,13 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+
         <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gif"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/gif"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:background="@drawable/bg_anim"
-            android:visibility="visible"
-            android:id="@+id/gif"/>
+            android:src="@drawable/gif"
+            android:visibility="visible" />
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -31,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:id="@+id/seekbar_time"
-        android:background="#96000000"
+        android:background="#fa9723"
         android:visibility="visible"
         android:gravity="center">
 
@@ -65,90 +68,80 @@
             android:paddingEnd="20dp" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/controls"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:background="#96000000"
-        android:visibility="visible">
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_repeate"
-            android:layout_gravity="right"
-            android:background="@null"
-            android:layout_weight="0"
-            android:src="@drawable/ic_repeate_all"
-            android:layout_marginLeft="10dp" />
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:layout_marginStart="35dp"
-            android:layout_marginEnd="35dp">
+            android:gravity="center"
+            android:background="#fa9723"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_repeate"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/btn_bkg"
+                android:src="@drawable/ic_repeate_all"
+                android:layout_marginEnd="5dp"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"/>
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_prev"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:layout_weight="1"
+                android:background="@drawable/btn_bkg"
                 android:src="@drawable/hplib_ic_previous"
-                android:cropToPadding="false"
-                android:layout_marginRight="24dp" />
-
-
+                android:layout_marginEnd="5dp"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"/>
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:layout_gravity="center"
+                android:background="@drawable/btn_bkg"
                 android:id="@+id/btn_rev"
-                android:layout_weight="1"
+                android:text="-10s"
                 android:src="@drawable/hplib_ic_rewind"
-                android:layout_marginRight="24dp" />
+                android:layout_marginEnd="5dp"/>
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
+                android:background="@drawable/btn_bkg"
                 android:src="@drawable/hplib_ic_play_download"
-                android:layout_gravity="center"
                 android:id="@+id/btn_play"
-                android:layout_weight="1"
-                android:visibility="visible"
-                android:layout_marginRight="24dp" />
+                android:layout_marginEnd="5dp"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"/>
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+30s"
-                android:background="@null"
-                android:layout_gravity="center"
+                android:text="+10s"
+                android:background="@drawable/btn_bkg"
                 android:id="@+id/btn_fwd"
-                android:layout_weight="1"
                 android:src="@drawable/hplib_ic_forward"
-                android:layout_marginRight="24dp" />
+                android:layout_marginEnd="5dp"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"/>
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_next"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:layout_weight="1"
-                android:src="@drawable/hplib_ic_next" />
+                android:background="@drawable/btn_bkg"
+                android:src="@drawable/hplib_ic_next"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"/>
         </LinearLayout>
-    </LinearLayout>
-
-
-
 </LinearLayout>

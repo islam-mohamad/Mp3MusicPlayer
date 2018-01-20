@@ -1,6 +1,7 @@
 package com.asis.mp3musicplayer;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +22,7 @@ import pl.droidsonroids.gif.GifImageView;
 public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyHolder> {
     ArrayList<Song> list;
     Context context ;
+    private Typeface type;
 
     public SongsAdapter(ArrayList<Song> list) {
         this.list = list;
@@ -31,6 +33,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyHolder> {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.music_item, parent, false);
         context=parent.getContext();
+        type = Typeface.createFromAsset(context.getAssets(), "fonts/dinnextregular.ttf");
         return new SongsAdapter.MyHolder(itemView);
     }
 
@@ -39,6 +42,8 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyHolder> {
         holder.textViewArtistName.setText(list.get(position).getArtist());
         holder.textViewSongTitle.setText(list.get(position).getTitle());
         holder.gif.setVisibility(list.get(position).isPlaying()?View.VISIBLE:View.INVISIBLE);
+        holder.textViewArtistName.setTypeface(type);
+        holder.textViewSongTitle.setTypeface(type);
     }
 
     @Override

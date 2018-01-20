@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity{
     private int seekbarProgress;
     private ImageView imageViewAlbum;
     private GifImageView gif;
+    private Typeface type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +111,9 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
+        if(!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
     }
 
     public void getSongList()
@@ -167,9 +171,9 @@ public class MainActivity extends AppCompatActivity{
                         currentPosition = position;
                         setPlayingSong();
 //                        mMysicService.play(position);
-                        if (drawer.isDrawerOpen(GravityCompat.START)) {
-                            drawer.closeDrawer(GravityCompat.START);
-                        }
+//                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//                            drawer.closeDrawer(GravityCompat.START);
+//                        }
                     }
                     @Override
                     public void onLongItemClick(View view, int position) {
@@ -190,7 +194,9 @@ public class MainActivity extends AppCompatActivity{
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-               mMysicService.seekTo(seekbarProgress);
+                if(mMysicService!=null) {
+                    mMysicService.seekTo(seekbarProgress);
+                }
             }
         });
 
@@ -321,7 +327,6 @@ public class MainActivity extends AppCompatActivity{
 
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onSongClicked(SongClicked songClicked){
-        if(songClicked.getCurrentTime()<=1000) {
             //update side bar at first time
 //            btnPlay.setImageResource(mMysicService.isPlaying()?R.drawable.hplib_ic_play_download:R.drawable.hplib_ic_pause);
 
@@ -334,15 +339,17 @@ public class MainActivity extends AppCompatActivity{
             SharedPreferences.Editor edit = sharedPreferences.edit();
             edit.putLong("songID",songClicked.getSongID());
             edit.apply();
-        }
-        if(songClicked.isPlaying()) {
-            seekbar.setProgress((int)songClicked.getCurrentTime());
+    }
+
+    @Subscribe (threadMode = ThreadMode.MAIN)
+    public void onCurrentTimeChanged(UpdateSeekbar updateSeekbar){
+            seekbar.setProgress((int)updateSeekbar.getCurrentTime());
             txtCurrentTime.setText(String.format("%02d:%02d",
-                    TimeUnit.MILLISECONDS.toMinutes(songClicked.getCurrentTime()),
-                    TimeUnit.MILLISECONDS.toSeconds(songClicked.getCurrentTime()) -
+                    TimeUnit.MILLISECONDS.toMinutes(updateSeekbar.getCurrentTime()),
+                    TimeUnit.MILLISECONDS.toSeconds(updateSeekbar.getCurrentTime()) -
                             TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.
-                                    toMinutes(songClicked.getCurrentTime()))));
-        }
+                                    toMinutes(updateSeekbar.getCurrentTime()))));
+
     }
 
     int getSongIndexByID (long songID){
@@ -360,6 +367,10 @@ public class MainActivity extends AppCompatActivity{
         }
         else{
             currentPosition = getSongIndexByID(songID);
+            //if song has been deleted from disk
+            if (currentPosition == -1){
+                currentPosition = 0;
+            }
         }
         updateUI();
     }
@@ -388,16 +399,22 @@ public class MainActivity extends AppCompatActivity{
     };
 
     private void initViews() {
+
+        type = Typeface.createFromAsset(getAssets(), "fonts/dinnextregular.ttf");
+
         recyclerView=(RecyclerView) findViewById(R.id.song_list_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new SongsAdapter(list);
         recyclerView.setAdapter(mAdapter);
         textViewTitle = (TextView) findViewById(R.id.title);
+        textViewTitle.setTypeface(type);
 
         txtCurrentTime = (TextView) findViewById(R.id.txt_currentTime);
+        txtCurrentTime.setTypeface(type);
         seekbar = (SeekBar) findViewById(R.id.seekbar);
         txtTotalDuration = (TextView) findViewById(R.id.txt_totalDuration);
+        txtTotalDuration.setTypeface(type);
         btnRepeate = (ImageButton) findViewById(R.id.btn_repeate);
         btnPrev = (ImageButton) findViewById(R.id.btn_prev);
         btnRev = (ImageButton) findViewById(R.id.btn_rev);

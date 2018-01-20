@@ -23,6 +23,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private long songID;
     private int totlaTime, currentTitme;
     private SongClicked clickedSong;
+    private UpdateSeekbar updateTime ;
     private Handler mHandler;
     public MusicService() {}
 
@@ -87,7 +88,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public void onPrepared(MediaPlayer mp) {
         Log.e(TAG, "in onPrepared");
         mMediaPlayer.start();
-        clickedSong = new SongClicked(songID,true,currentTitme);
+        clickedSong = new SongClicked(songID,true);
+        EventBus.getDefault().post(clickedSong );
+        updateTime = new UpdateSeekbar();
         mHandler.postDelayed(updateSeekBar,1000);
         totlaTime = mMediaPlayer.getDuration();
 //        EventBus.getDefault().post(new SongClicked(songID,true));
@@ -99,8 +102,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         {
 //            if (mMediaPlayer.getCurrentPosition()<mMediaPlayer.getDuration()){
                 Log.e(TAG,"count:"+(i++));
-            clickedSong.setCurrentTime(mMediaPlayer.getCurrentPosition());
-                EventBus.getDefault().post(clickedSong);
+            updateTime.setCurrentTime(mMediaPlayer.getCurrentPosition());
+                EventBus.getDefault().post(updateTime );
 //            }
             mHandler.postDelayed(this, 1000);
         }
@@ -140,13 +143,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     void forward(){
         currentTitme = mMediaPlayer.getCurrentPosition();
         if(currentTitme < totlaTime){
-            mMediaPlayer.seekTo(currentTitme+5000);
+            mMediaPlayer.seekTo(currentTitme+10000);
         }
     }
     void backward(){
         currentTitme = mMediaPlayer.getCurrentPosition();
-        if(currentTitme > 5000){
-            mMediaPlayer.seekTo(currentTitme-5000);
+        if(currentTitme > 10000){
+            mMediaPlayer.seekTo(currentTitme-10000);
         }
     }
 
