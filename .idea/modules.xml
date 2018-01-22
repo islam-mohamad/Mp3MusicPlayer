@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Mp3MusicPlayer.iml" filepath="$PROJECT_DIR$/Mp3MusicPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Mp3MusicPlayer.iml" filepath="$PROJECT_DIR$/.idea/Mp3MusicPlayer.iml" />
-      <module fileurl="file://C:\Users\Eslam\AndroidStudioProjects\Mp3MusicPlayer\Mp3MusicPlayer.iml" filepath="C:\Users\Eslam\AndroidStudioProjects\Mp3MusicPlayer\Mp3MusicPlayer.iml" />
+      <module fileurl="file://$USER_HOME$/AndroidStudioProjects/Mp3MusicPlayer/Mp3MusicPlayer.iml" filepath="$USER_HOME$/AndroidStudioProjects/Mp3MusicPlayer/Mp3MusicPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

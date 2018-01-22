@@ -16,18 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" >
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="song Title"
-                android:textColor="#fff"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:gravity="start|center"
-                android:id="@+id/title"
-                android:lines="1"/>
-        </android.support.v7.widget.Toolbar>
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 

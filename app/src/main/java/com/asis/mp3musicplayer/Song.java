@@ -18,12 +18,14 @@ public class Song {
     private boolean isPlaying ;
     private boolean isLooping;
     private Bitmap albumImage;
+    private int cursorPosition;
 
-    public Song(long id, String title, String artist, long totalTime, Bitmap albumImage/*, String path, String info*/) {
+    public Song(long id, String title, String artist, long totalTime, int cursorPosition/*, String path, String info*/) {
         this.id = id;
         this.title = title;
         this.artist = artist;
         this.totalTime = totalTime;
+        this.cursorPosition = cursorPosition;
         this.albumImage = albumImage;
 //        this.path = path;
 //        this.info = info;
@@ -115,5 +117,13 @@ public class Song {
 
     public void setLooping(boolean isLooping) {
         this.isLooping = isLooping;
+    }
+
+    public int getCursorPosition() {
+        return cursorPosition;
+    }
+
+    public void setCursorPosition(int cursorPosition) {
+        this.cursorPosition = cursorPosition;
     }
 }

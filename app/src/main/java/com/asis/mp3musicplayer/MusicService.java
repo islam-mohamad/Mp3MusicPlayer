@@ -50,8 +50,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         final Uri songUri = Uri.parse(intent.getStringExtra("uri"));
         songID =intent.getLongExtra("songID",0);
         play(songUri);
-        Log.e(TAG, "in onBind, Inent : "+intent.toString());
-        Log.e(TAG, "in onBind,SongID: "+songID);
         return mBinder;
     }
 
@@ -64,11 +62,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public boolean onUnbind(Intent intent) {
         Log.e(TAG, "in onUnbind");
-        if(mMediaPlayer!=null) {
+        if(mMediaPlayer!=null&&clickedSong!=null) {
             mMediaPlayer.pause();
             clickedSong.setPlaying(false);
             EventBus.getDefault().post(clickedSong); // song has been stoped or paused
-            Log.e(TAG, "in pausing ");
             mHandler.removeCallbacks(updateSeekBar);
         }
         return true;
@@ -111,6 +108,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onCompletion(MediaPlayer mp) {
         Log.e(TAG, "in onCompletion");
+        EventBus.getDefault().post(new SongCompleted(true) );
     }
 
     @Override

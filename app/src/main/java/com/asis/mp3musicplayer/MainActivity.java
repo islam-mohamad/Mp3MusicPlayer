@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +30,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -43,18 +43,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageView;
-
 public class MainActivity extends AppCompatActivity{
 
     private static final String TAG = "MainActivity";
     private RecyclerView recyclerView;
-    static SongsAdapter mAdapter;
+    SongsAdapter mAdapter;
     ArrayList<Song> list;
     private DrawerLayout drawer;
-    private TextView textViewTitle;
-
     private MusicService mMysicService;
     private int currentPosition = -1;
     boolean isBound ;
@@ -63,8 +58,9 @@ public class MainActivity extends AppCompatActivity{
     private SeekBar seekbar;
     private int seekbarProgress;
     private ImageView imageViewAlbum;
-    private GifImageView gif;
     private Typeface type;
+    private ImageView ivSideBar;
+    private TextView textViewArtist,textViewTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +73,7 @@ public class MainActivity extends AppCompatActivity{
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
         imageViewAlbum = (ImageView) findViewById(R.id.imageViewAlbum);
-        gif = (GifImageView) findViewById(R.id.gif);
-        gif.setFreezesAnimation(true);
         // get Song List
         new Thread(new Runnable()
         {
@@ -128,34 +121,13 @@ public class MainActivity extends AppCompatActivity{
             int idColumn=musicCursor.getColumnIndex(MediaStore.Audio.Media._ID);
             int artistColumn=musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
             int durationColumn=musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-//            int column_index = musicCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-//            int artistColumn=musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-//            int artistColumn=musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
             do {
                 long thisId=musicCursor.getLong(idColumn);
                 String thisTitle=musicCursor.getString(titleColumn);
                 String thisArtist=musicCursor.getString(artistColumn);
                 long thisDuration = musicCursor.getLong(durationColumn);
 
-//                String pathId = musicCursor.getString(column_index);
-//                Log.d(TAG, "path id=" + pathId);
-//                MediaMetadataRetriever metaRetriver = new MediaMetadataRetriever();
-//                metaRetriver.setDataSource(pathId);
-//                Bitmap songImage = null;
-//                try {
-//                    byte[] art = metaRetriver.getEmbeddedPicture();
-//                    art = metaRetriver.getEmbeddedPicture();
-//                    BitmapFactory.Options opt = new BitmapFactory.Options();
-//                    opt.inSampleSize = 2;
-//                    songImage = BitmapFactory.decodeByteArray(art, 0, art.length,opt);
-//                }
-//                catch (Exception e)
-//                {
-//                    e.getStackTrace();
-//                    Log.e(TAG,e.toString());
-//                }
-
-               list.add(new Song(thisId, thisTitle, thisArtist, thisDuration,null));
+               list.add(new Song(thisId, thisTitle, thisArtist, thisDuration,musicCursor.getPosition()));
             }
             while(musicCursor.moveToNext());
             musicCursor.close();
@@ -163,6 +135,12 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void onRecyclerViewItemClick() {
+        ivSideBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.openDrawer(GravityCompat.START);
+            }
+        });
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getApplicationContext(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
@@ -170,10 +148,6 @@ public class MainActivity extends AppCompatActivity{
 
                         currentPosition = position;
                         setPlayingSong();
-//                        mMysicService.play(position);
-//                        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//                            drawer.closeDrawer(GravityCompat.START);
-//                        }
                     }
                     @Override
                     public void onLongItemClick(View view, int position) {
@@ -256,6 +230,44 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
+        btnRepeate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences;
+                SharedPreferences.Editor edit;
+                switch (getSharedPreferences("asis_mp3_player",MODE_PRIVATE).getString("repeate","")){
+                    case "all":
+                        sharedPreferences = getSharedPreferences("asis_mp3_player",MODE_PRIVATE);
+                        edit = sharedPreferences.edit();
+                        edit.putString("repeate","one");
+                        edit.apply();
+                        btnRepeate.setImageResource(R.drawable.ic_repeate_once);
+                        break;
+                    case "one":
+                        sharedPreferences = getSharedPreferences("asis_mp3_player",MODE_PRIVATE);
+                        edit = sharedPreferences.edit();
+                        edit.putString("repeate","order");
+                        edit.apply();
+                        btnRepeate.setImageResource(R.drawable.ic_in_order);
+                        break;
+                    case "order":
+                        sharedPreferences = getSharedPreferences("asis_mp3_player",MODE_PRIVATE);
+                        edit = sharedPreferences.edit();
+                        edit.putString("repeate","shuffle");
+                        edit.apply();
+                        btnRepeate.setImageResource(R.drawable.ic_shuffle);
+                        break;
+                    case "shuffle":
+                        sharedPreferences = getSharedPreferences("asis_mp3_player",MODE_PRIVATE);
+                        edit = sharedPreferences.edit();
+                        edit.putString("repeate","all");
+                        edit.apply();
+                        btnRepeate.setImageResource(R.drawable.ic_repeate_all);
+                        break;
+                }
+
+            }
+        });
     }
 
     private void setPlayingSong() {
@@ -286,6 +298,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void run() {
                 textViewTitle.setText(list.get(currentPosition).getTitle());
+                textViewArtist.setText(list.get(currentPosition).getArtist());
                 txtTotalDuration.setText(String.format("%02d:%02d",
                         TimeUnit.MILLISECONDS.toMinutes( list.get(currentPosition).getTotalTime()),
                         TimeUnit.MILLISECONDS.toSeconds( list.get(currentPosition).getTotalTime()) -
@@ -302,22 +315,41 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void run()
                     {
-                        if (list.get(currentPosition).getAlbumImage() != null) {
-                            imageViewAlbum.setVisibility(View.VISIBLE);
-                            gif.setVisibility(View.GONE);
-                            imageViewAlbum.setImageBitmap(list.get(currentPosition).getAlbumImage());
+                        if (list.get(currentPosition).getAlbumImage() == null) {
+//                            gif.setVisibility(View.GONE);
+                            ContentResolver musicResolver = getContentResolver();
+                            Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                            Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
+
+                            if (musicCursor != null && musicCursor.moveToPosition(list.get(currentPosition).getCursorPosition())) {
+                                int column_index = musicCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+                                String pathId = musicCursor.getString(column_index);
+                                Log.d(TAG, "path id=" + pathId);
+                                MediaMetadataRetriever metaRetriver = new MediaMetadataRetriever();
+                                metaRetriver.setDataSource(pathId);
+                                Bitmap songImage = null;
+                                try {
+                                byte[] art = metaRetriver.getEmbeddedPicture();
+                                art = metaRetriver.getEmbeddedPicture();
+                                BitmapFactory.Options opt = new BitmapFactory.Options();
+                                opt.inSampleSize = 2;
+                                songImage = BitmapFactory.decodeByteArray(art, 0, art.length, opt);
+                            } catch (Exception e) {
+                                e.getStackTrace();
+                                Log.e(TAG, e.toString());
+                            }
+                            list.get(currentPosition).setAlbumImage(songImage);
+                            musicCursor.close();
+                        }
+                            if (list.get(currentPosition).getAlbumImage() != null) {
+                                imageViewAlbum.setImageBitmap(list.get(currentPosition).getAlbumImage());
+                            }
+                            else {
+                                imageViewAlbum.setImageResource(R.drawable.logo);
+                            }
                         }
                         else {
-                            runOnUiThread(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    imageViewAlbum.setVisibility(View.GONE);
-                                    gif.setVisibility(View.VISIBLE);
-                                    imageViewAlbum.setBackgroundColor(Color.GRAY);
-                                }
-                            });
+                            imageViewAlbum.setImageBitmap(list.get(currentPosition).getAlbumImage());
                         }
                     }
                 });
@@ -328,19 +360,51 @@ public class MainActivity extends AppCompatActivity{
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onSongClicked(SongClicked songClicked){
             //update side bar at first time
-//            btnPlay.setImageResource(mMysicService.isPlaying()?R.drawable.hplib_ic_play_download:R.drawable.hplib_ic_pause);
 
             int index = getSongIndexByID(songClicked.getSongID());
-
             list.get(index).setPlaying(songClicked.isPlaying());
             mAdapter.notifyDataSetChanged();
 
-            SharedPreferences sharedPreferences = getSharedPreferences("asis_mp3_player",MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("asis_mp3_player", MODE_PRIVATE);
             SharedPreferences.Editor edit = sharedPreferences.edit();
-            edit.putLong("songID",songClicked.getSongID());
+            edit.putLong("songID", songClicked.getSongID());
             edit.apply();
     }
-
+    @Subscribe (threadMode = ThreadMode.MAIN)
+    public void onSongCompleted(SongCompleted songCompleted){
+        if(songCompleted.isCompleted()) {
+            String state = getSharedPreferences("asis_mp3_player", MODE_PRIVATE).getString("repeate", "");
+            switch (state) {
+                case "all":
+                    if (currentPosition < list.size() - 1) {
+                        ++currentPosition;
+                    } else {
+                        currentPosition = 0;
+                    }
+                    setPlayingSong();
+                    break;
+                case "one":
+                    setPlayingSong();
+                    // do nothing
+                    break;
+                case "order":
+                    if (currentPosition < list.size() - 1) {
+                        ++currentPosition;
+                        setPlayingSong();
+                    }
+                    break;
+                case "shuffle":
+                    int temp = currentPosition;
+                    // to prevent repeating the current song
+                    do{
+                        currentPosition = (int) (Math.random() * list.size());
+                    }
+                    while (temp == currentPosition);
+                    setPlayingSong();
+                    break;
+            }
+        }
+    }
     @Subscribe (threadMode = ThreadMode.MAIN)
     public void onCurrentTimeChanged(UpdateSeekbar updateSeekbar){
             seekbar.setProgress((int)updateSeekbar.getCurrentTime());
@@ -399,6 +463,14 @@ public class MainActivity extends AppCompatActivity{
     };
 
     private void initViews() {
+        if(getSharedPreferences("asis_mp3_player",MODE_PRIVATE).getString("repeate","").equals("")){
+            //at first launch
+            SharedPreferences sharedPreferences = getSharedPreferences("asis_mp3_player",MODE_PRIVATE);
+            SharedPreferences.Editor edit  = sharedPreferences.edit();
+            edit.putString("repeate","all");
+            edit.apply();
+            btnRepeate.setImageResource(R.drawable.ic_repeate_once);
+        }
 
         type = Typeface.createFromAsset(getAssets(), "fonts/dinnextregular.ttf");
 
@@ -407,8 +479,6 @@ public class MainActivity extends AppCompatActivity{
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new SongsAdapter(list);
         recyclerView.setAdapter(mAdapter);
-        textViewTitle = (TextView) findViewById(R.id.title);
-        textViewTitle.setTypeface(type);
 
         txtCurrentTime = (TextView) findViewById(R.id.txt_currentTime);
         txtCurrentTime.setTypeface(type);
@@ -421,6 +491,11 @@ public class MainActivity extends AppCompatActivity{
         btnPlay = (ImageButton) findViewById(R.id.btn_play);
         btnFwd = (ImageButton) findViewById(R.id.btn_fwd);
         btnNext = (ImageButton) findViewById(R.id.btn_next);
+        ivSideBar = (ImageView) findViewById(R.id.ivSideBar);
+        textViewTitle = (TextView) findViewById(R.id.textViewTitle);
+        textViewTitle.setTypeface(type);
+        textViewArtist = (TextView) findViewById(R.id.textViewArtist);
+        textViewArtist.setTypeface(type);
     }
     @Override
     public void onBackPressed() {
@@ -428,9 +503,10 @@ public class MainActivity extends AppCompatActivity{
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            moveTaskToBack(true);
         }
     }
+
 
     @Override
     protected void onDestroy() {

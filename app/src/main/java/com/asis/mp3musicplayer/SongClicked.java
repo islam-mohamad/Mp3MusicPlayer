@@ -13,7 +13,6 @@ public class SongClicked {
         this.isPlaying = isPlaying;
     }
 
-
     public long getSongID() {
         return songID;
     }
